@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robô de Ideias - Chat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Estilos customizados para o chat */
+        .chat-container {
+            height: calc(100vh - 8rem); /* Altura ajustada para a área de mensagens */
+            overflow-y: auto; /* Adiciona scroll se as mensagens excederem a altura */
+            padding: 1rem;
+        }
+        .message {
+            margin-bottom: 1rem;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            max-width: 80%; /* Limita a largura da mensagem */
+        }
+        .robot-message {
+            background-color: #e2e8f0; /* Cor de fundo para mensagens do robô (cinza claro) */
+            align-self: flex-start; /* Alinha à esquerda */
+        }
+        .user-message {
+            background-color: #3b82f6; /* Cor de fundo para mensagens do usuário (azul) */
+            color: white; /* Texto branco para mensagens do usuário */
+            align-self: flex-end; /* Alinha à direita */
+        }
+        .input-area {
+            padding: 1rem;
+            border-top: 1px solid #e2e8f0; /* Borda superior */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div class="w-full max-w-md bg-white shadow-lg rounded-lg overflow-hidden flex flex-col h-[80vh]">
+
+        <div id="chatBox" class="flex-grow chat-container flex flex-col">
+            </div>
+
+        <div class="input-area flex items-center">
+            <input type="text" id="messageInput" placeholder="Digite sua mensagem..." class="flex-grow p-2 border rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button id="sendButton" class="bg-blue-500 text-white p-2 rounded-r-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                Enviar
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        const chatBox = document.getElementById('chatBox');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+
+        // Função para adicionar uma mensagem à caixa de chat
+        function addMessage(text, sender) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+            if (sender === 'robot') {
+                messageElement.classList.add('robot-message');
+            } else {
+                messageElement.classList.add('user-message');
+            }
+            messageElement.textContent = text;
+            chatBox.appendChild(messageElement);
+            // Rola para a mensagem mais recente
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Adiciona a mensagem inicial do robô ao carregar a página
+        window.onload = function() {
+            addMessage("Olá, como posso ajudar a ter ideias?", 'robot');
+        };
+
+        // Adiciona um listener para o botão de enviar (a lógica de envio real virá depois)
+        sendButton.addEventListener('click', function() {
+            const messageText = messageInput.value.trim();
+            if (messageText) {
+                // Aqui você adicionaria a lógica para enviar a mensagem para o backend (o "cérebro")
+                // Por enquanto, apenas adicionamos a mensagem do usuário na tela
+                addMessage(messageText, 'user');
+                messageInput.value = ''; // Limpa o input
+            }
+        });
+
+        // Permite enviar a mensagem pressionando Enter no campo de input
+        messageInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Previne a quebra de linha padrão
+                sendButton.click(); // Simula o clique no botão de enviar
+            }
+        });
+
+    </script>
+
+</body>
+</html>
