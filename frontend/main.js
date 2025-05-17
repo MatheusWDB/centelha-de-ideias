@@ -1,4 +1,4 @@
-const url = "http://localhost:8080"
+const url = "https://centelha-de-ideias.onrender.com"
 const chatBox = document.getElementById('chatBox');
 const messageInput = document.getElementById('messageInput');
 const sendButton = document.getElementById('sendButton');
