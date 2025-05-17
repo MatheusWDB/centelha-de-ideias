@@ -54,7 +54,7 @@ Certifique-se de ter os seguintes softwares instalados em sua máquina:
 
 1.  **Clonar o Repositório:**
     ```bash
-    git clone 
+    git clone https://github.com/MatheusWDB/centelha-de-ideias
     cd /backend # Navegue até a raiz do diretório do backend
     ```
 2.  **Configurar a Chave de API do Google Gemini:**
@@ -78,7 +78,9 @@ O backend estará rodando e escutando em `http://localhost:8080`.
 
 1.  **Navegue para a Pasta do Frontend:**
     Vá para o diretório onde os arquivos `index.html`, `style.css` e `main.js` estão localizados.
-2.  **Abra o Arquivo HTML:**
+2.  **Altere o valor da url:**
+    Abra o main.js e altere url para o seguinte valor -> "http://localhost:8080"
+3.  **Abra o Arquivo HTML:**
     Simplesmente abra o arquivo `index.html` diretamente em qualquer navegador web.
 
     ```bash
