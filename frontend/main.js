@@ -3,7 +3,7 @@ const chatBox = document.getElementById('chatBox');
 const messageInput = document.getElementById('messageInput');
 const sendButton = document.getElementById('sendButton');
 
-function addMessage(text, sender) {
+function appendMessage(text, sender) {
     const messageElement = document.createElement('div');
     messageElement.classList.add('message');
 
@@ -33,7 +33,7 @@ function addMessage(text, sender) {
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-async function getResponse(messageText) {
+async function sendAndReceiveMessage(messageText) {
     messageInput.placeholder = "Processando, aguarde..."
 
     try {
@@ -53,27 +53,27 @@ async function getResponse(messageText) {
         }
 
         const data = await response.json();
-        addMessage(data.text, "robot");
+        appendMessage(data.text, "robot");
 
     } catch (error) {
-        addMessage(error.text, 'robot')
+        appendMessage(error.text, 'robot')
     }
     messageInput.disabled = false;
     sendButton.disabled = false;
 }
 
 window.onload = function () {
-    addMessage("Olá, como posso ajudar a ter ideias?", 'robot');
-    addMessage("Lembre, ajudaria muito se deixasse claro o tema, o tipo do projeto e seus interesses", 'robot');
+    appendMessage("Olá, como posso ajudar a ter ideias?", 'robot');
+    appendMessage("Lembre, ajudaria muito se deixasse claro o tema, o tipo do projeto e seus interesses", 'robot');
 };
 
 sendButton.addEventListener('click', function () {
     const messageText = messageInput.value.trim();
     if (messageText) {
-        addMessage(messageText, 'user');
+        appendMessage(messageText, 'user');
         messageInput.disabled = true;
         sendButton.disabled = true;
-        getResponse(messageText)
+        sendAndReceiveMessage(messageText)
         messageInput.value = '';
     }
 });
