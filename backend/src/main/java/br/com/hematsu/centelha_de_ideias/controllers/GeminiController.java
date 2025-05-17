@@ -20,28 +20,28 @@ public class GeminiController {
     private GeminiService geminiService;
 
     @PostMapping
-    public ResponseEntity<ResponseDTO> getIdea(@RequestBody String request) {
+    public ResponseEntity<ResponseDTO> generateIdea(@RequestBody String request) {
         if (request == null || request.trim().isEmpty()) {
             return ResponseEntity.badRequest()
                     .body(new ResponseDTO("Por favor, forneça o tema, tipo de projeto ou seus interesses para gerar a ideia."));
         }
 
         try {
-            String ideiaGerada = geminiService.organizarInformacoes(request);
+            String idea = geminiService.generateIdeaFromInput(request);
 
-            if (ideiaGerada.contains("serviço de geração de ideias não está disponível")) {
-                return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(new ResponseDTO(ideiaGerada));
+            if (idea.contains("serviço de geração de ideias não está disponível")) {
+                return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(new ResponseDTO(idea));
             }
-            if (ideiaGerada.contains("Ocorreu um erro ao gerar a ideia")
-                    || ideiaGerada.contains("problema de inicialização")) { 
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDTO(ideiaGerada));
+            if (idea.contains("Ocorreu um erro ao gerar a ideia")
+                    || idea.contains("problema de inicialização")) { 
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDTO(idea));
             }
-            if (ideiaGerada.contains("não gerou uma resposta válida")) {
+            if (idea.contains("não gerou uma resposta válida")) {
                 return ResponseEntity.status(HttpStatus.NO_CONTENT)
                         .body(new ResponseDTO("A API gerou uma resposta vazia para sua solicitação."));
             }
 
-            return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO(ideiaGerada));
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseDTO(idea));
 
         } catch (Exception e) {
             System.err.println("Erro inesperado no controller ao processar a requisição: " + e.getMessage());

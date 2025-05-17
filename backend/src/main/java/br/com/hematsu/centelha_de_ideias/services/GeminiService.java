@@ -13,13 +13,13 @@ import jakarta.annotation.PreDestroy;
 @Service
 public class GeminiService {
 
-    //API KEY nas variáveis de ambiente
+    // API KEY nas variáveis de ambiente
     @Value("${api.key}")
     private String apiKey;
 
-    private Models modelsApiClient;
+    private Models modelsClient;
 
-    private Client genAiClient;
+    private Client geminiClient;
 
     public GeminiService() {
         System.out.println("Inicializando serviço Gemini com API Key...");
@@ -35,27 +35,27 @@ public class GeminiService {
         }
 
         try {
-            this.genAiClient = Client.builder()
+            this.geminiClient = Client.builder()
                     .apiKey(apiKey)
-                    .build(); 
+                    .build();
 
-            this.modelsApiClient = genAiClient.models;
+            this.modelsClient = geminiClient.models;
 
             System.out.println("Cliente e acesso aos Models Gemini inicializados com sucesso!");
 
         } catch (Exception e) {
             System.err.println("Erro ao inicializar o cliente/modelo Gemini: " + e.getMessage());
             e.printStackTrace();
-            this.modelsApiClient = null;
-            this.genAiClient = null;
+            this.modelsClient = null;
+            this.geminiClient = null;
         }
     }
 
     @PreDestroy
     public void cleanup() {
-        if (genAiClient != null) {
+        if (geminiClient != null) {
             try {
-                genAiClient.close();
+                geminiClient.close();
                 System.out.println("Cliente Gemini fechado.");
             } catch (Exception e) {
                 System.err.println("Erro ao fechar o cliente Gemini: " + e.getMessage());
@@ -64,23 +64,32 @@ public class GeminiService {
         }
     }
 
-    public String identificadorDePontosChave(String text, String ponto) {
-        String prompt = "Você é um assistente identificador de Pontos-Chave. " +
-                "Defina o " + ponto + " do seguinte texto: " + text +
-                "\nSeja diereto e responda SOMENTE com o " + ponto + ", não acrescente nenhum tipo de comentário" +
-                "\nCaso o texto não deixe claro, ou não especifique o " + ponto + ", defina um.";
+    public String extractKeyword(String input, String keywordType) {
+        String prompt = "Você é um assistente especializado em identificar Pontos-Chave de um texto.\n" +
+                "Sua tarefa é extrair o [" + keywordType + "] principal do seguinte texto fornecido pelo usuário:\n" +
+                "```\n" + input + "\n```\n\n" +
+                "Instruções:\n" +
+                "1. Leia atentamente o texto.\n" +
+                "2. Identifique o [" + keywordType + "] solicitado de forma concisa.\n" +
+                "3. Responda APENAS com o [" + keywordType + "] identificado.\n" +
+                "4. NÃO inclua qualquer comentário adicional, introdução, saudação, explicação ou pontuação extra antes ou depois da resposta (ex: 'O tema é:', '-', '.', etc.).\n"
+                +
+                "5. A resposta deve ser o mais curta possível, idealmente uma palavra ou frase curta.\n" +
+                "6. Se o texto estiver vazio ou não mencionar explicitamente o [" + keywordType
+                + "], fica ao seu critério definir um.\n\n" +
+                "Resposta (APENAS o [" + keywordType + "]):";
 
         try {
-            GenerateContentResponse response = modelsApiClient.generateContent("gemini-2.0-flash", prompt,
+            GenerateContentResponse response = modelsClient.generateContent("gemini-2.0-flash", prompt,
                     null);
 
-            String pontoChave = response.text();
+            String extractedKeyword = response.text();
 
-            if (pontoChave == null || pontoChave.trim().isEmpty()) {
+            if (extractedKeyword == null || extractedKeyword.trim().isEmpty()) {
                 return "O Gemini não gerou uma resposta válida para o seu pedido (resposta vazia).";
             }
 
-            return pontoChave;
+            return extractedKeyword;
 
         } catch (Exception e) {
             System.err.println("Erro ao chamar a API do Gemini durante a geração de conteúdo: " + e.getMessage());
@@ -89,45 +98,61 @@ public class GeminiService {
         }
     }
 
-    public String organizarInformacoes(String text) {
-        if (modelsApiClient == null) {
+    public String generateIdeaFromInput(String userInput) {
+        if (modelsClient == null) {
             System.err.println("Tentativa de usar Models API cliente não inicializado.");
 
             return "Desculpe, o serviço de geração de ideias não está disponível no momento devido a um problema de inicialização.";
         }
 
-        String tema = identificadorDePontosChave(text, "tema principal");
-        String tipo = identificadorDePontosChave(text, "tipo de projeto");
-        String interesse = identificadorDePontosChave(text, "interesse do usuário");
+        String theme = extractKeyword(userInput, "tema principal");
+        String projectType = extractKeyword(userInput, "tipo de projeto");
+        String userInterests = extractKeyword(userInput, "interesse do usuário");
 
-        String ideia = gerarIdeiaProjeto(tema, tipo, interesse);
-        return ideia;
+        String generatedIdea = generateProjectIdea(theme, projectType, userInterests);
+        return generatedIdea;
     }
 
-    public String gerarIdeiaProjeto(String tema, String tipoProjeto, String interessesUsuario) {
-        System.out.println(tema + tipoProjeto + interessesUsuario);
+    public String generateProjectIdea(String theme, String projectType, String userInterests) {
+        System.out.println(theme + projectType + userInterests);
 
-        String promptText = "Você é um assistente criativo para gerar ideias de projetos. " +
-                "Crie uma ideia de projeto inovadora combinando os seguintes elementos:\n" +
-                "Tema Principal: " + tema + "\n" +
-                "Tipo de Projeto: " + tipoProjeto + "\n" +
-                "Interesses do Usuário: " + interessesUsuario + "\n\n" +
-                "Sugira uma ideia de projeto clara, descreva brevemente o que ele faria " +
-                "e talvez uma tecnologia chave que poderia ser usada. Seja conciso e criativo.\n" +
-                "Sugira um nome para o projeto\n" +
-                "Deixe claro os requisitos e as regras de negócio a serem implementadas, tudo bonitinho e separado por categoria";
+        String prompt = "Você é um Gerador de Ideias de Projetos Criativos e Estruturados.\n" +
+                "Sua missão é desenvolver UMA ÚNICA ideia de projeto inovadora, interessante e coerente, baseada nos seguintes elementos fornecidos:\n"
+                +
+                "- Tema Principal: " + theme + "\n" +
+                "- Tipo de Projeto: " + projectType + "\n" +
+                "- Interesses do Usuário: " + userInterests + "\n\n" +
+                "Apresente a ideia de projeto no seguinte FORMATO BEM ESTRUTURADO, usando cabeçalhos claros para cada seção:\n\n"
+                +
+                "Nome do Projeto:\n" +
+                "[Sugira um nome criativo e relevante para o projeto, alinhado com o tema e tipo.]\n\n" +
+                "Descrição Concisa:\n" +
+                "[Escreva uma descrição breve (aprox. 2 a 4 frases) explicando a essência do projeto, o que ele faz, qual problema resolve ou valor entrega, combinando os elementos dados. Mantenha um tom criativo e inspirador.]\n\n"
+                +
+                "Tecnologia Chave Sugerida:\n" +
+                "[Sugira tecnologias, frameworks, linguagens ou ferramentas fundamentais e relevantes que poderiam ser usadas para implementar este projeto. Seja específico se possível.]\n\n"
+                +
+                "Requisitos Principais:\n" +
+                "[Liste entre 5 e 10 requisitos essenciais (funcionais ou não funcionais) que o projeto deve atender. Apresente-os como uma lista de tópicos concisos, utilizando marcadores (como '-' ou '*').]\n\n"
+                +
+                "Regras de Negócio Essenciais:\n" +
+                "[Liste entre 5 e 10 regras de negócio fundamentais que definem como o projeto opera ou interage. Apresente-as como uma lista de tópicos concisos, utilizando marcadores (como '-' ou '*').]\n\n"
+                +
+                "Certifique-se de que todos os elementos da ideia (Nome, Descrição, Tecnologia, Requisitos, Regras) estejam alinhados e integrem de forma significativa o Tema Principal, o Tipo de Projeto e os Interesses do Usuário fornecidos.\n"
+                +
+                "Não inclua introduções, conclusões ou texto fora das seções especificadas.";
 
         try {
-            GenerateContentResponse response = modelsApiClient.generateContent("gemini-2.0-flash", promptText,
+            GenerateContentResponse response = modelsClient.generateContent("gemini-2.0-flash", prompt,
                     null);
 
-            String ideia = response.text();
+            String ideaContent = response.text();
 
-            if (ideia == null || ideia.trim().isEmpty()) {
+            if (ideaContent == null || ideaContent.trim().isEmpty()) {
                 return "O Gemini não gerou uma resposta válida para o seu pedido (resposta vazia).";
             }
 
-            return ideia;
+            return ideaContent;
 
         } catch (Exception e) {
             System.err.println("Erro ao chamar a API do Gemini durante a geração de conteúdo: " + e.getMessage());
