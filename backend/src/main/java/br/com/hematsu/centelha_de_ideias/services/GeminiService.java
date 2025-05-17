@@ -14,7 +14,7 @@ import jakarta.annotation.PreDestroy;
 public class GeminiService {
 
     //API KEY nas variáveis de ambiente
-    @Value("${google.gemini.api.key}")
+    @Value("${api.key}")
     private String apiKey;
 
     private Models modelsApiClient;
