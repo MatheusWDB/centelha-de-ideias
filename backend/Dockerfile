@@ -5,7 +5,7 @@ RUN apt-get install openjdk-21-jdk -y
 COPY . .
 
 RUN apt-get install maven -y
-RUN mvn clean install -Dapi.key=${API_KEY}
+RUN mvn clean install -DAPI_KEY=${API_KEY} -DskipTests=false
 
 FROM openjdk:21-jdk-slim
 
