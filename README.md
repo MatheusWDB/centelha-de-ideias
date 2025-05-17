@@ -4,7 +4,7 @@
 
 O **Centelha de Ideias** é uma aplicação web interativa desenvolvida para estimular a criatividade dos usuários, gerando sugestões de projetos com base em seus temas, tipos de projeto e interesses. A aplicação atua como um assistente de IA, utilizando a poderosa API do **Google Gemini** para analisar as entradas do usuário e fornecer ideias de projetos estruturadas e detalhadas, incluindo nome sugerido, descrição, requisitos e regras de negócio.
 
-A interface do usuário simula um chat intuitivo, permitindo uma interação direta e natural com o assistente de IA para explorar e refinar ideias.
+A interface do usuário simula um chat intuitivo, permitindo uma interação direta e natural com o assistente de IA para explorar e refinar ideias. É importante notar que cada nova mensagem enviada é processada de forma independente pelo sistema, e o histórico das interações anteriores não é mantido.
 
 ## ✨ Funcionalidades Principais
 
