@@ -26,7 +26,8 @@ function addMessage(text, sender) {
 
     } else {
         messageElement.classList.add('user-message');
-        messageElement.textContent = text;    }
+        messageElement.textContent = text;
+    }
 
     chatBox.appendChild(messageElement);
     chatBox.scrollTop = chatBox.scrollHeight;
@@ -57,7 +58,8 @@ async function getResponse(messageText) {
     } catch (error) {
         addMessage(error.text, 'robot')
     }
-    messageInput.disabled = false
+    messageInput.disabled = false;
+    sendButton.disabled = false;
 }
 
 window.onload = function () {
@@ -70,6 +72,7 @@ sendButton.addEventListener('click', function () {
     if (messageText) {
         addMessage(messageText, 'user');
         messageInput.disabled = true;
+        sendButton.disabled = true;
         getResponse(messageText)
         messageInput.value = '';
     }
