@@ -126,10 +126,10 @@ public class GeminiService {
                 +
                 "Nome do Projeto:\n" +
                 "[Sugira um nome criativo e relevante para o projeto, alinhado com o tema e tipo.]\n\n" +
-                "Descrição Concisa:\n" +
+                "Descrição:\n" +
                 "[Escreva uma descrição breve (aprox. 2 a 4 frases) explicando a essência do projeto, o que ele faz, qual problema resolve ou valor entrega, combinando os elementos dados. Mantenha um tom criativo e inspirador.]\n\n"
                 +
-                "Tecnologia Chave Sugerida:\n" +
+                "Tecnologias Chaves Sugeridas:\n" +
                 "[Sugira tecnologias, frameworks, linguagens ou ferramentas fundamentais e relevantes que poderiam ser usadas para implementar este projeto. Seja específico se possível.]\n\n"
                 +
                 "Requisitos Principais:\n" +
