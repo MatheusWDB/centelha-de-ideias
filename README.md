@@ -6,6 +6,8 @@ O **Centelha de Ideias** é uma aplicação web interativa desenvolvida para est
 
 A interface do usuário simula um chat intuitivo, permitindo uma interação direta e natural com o assistente de IA para explorar e refinar ideias. É importante notar que cada nova mensagem enviada é processada de forma independente pelo sistema, e o histórico das interações anteriores não é mantido.
 
+**Este projeto é fruto direto dos aprendizados e da experiência proporcionada pela Imersão IA Alura + Google Gemini, servindo como o alicerce essencial para o seu desenvolvimento.**
+
 ## ✨ Funcionalidades Principais
 
 *   **Interface de Chat Interativa:** Uma experiência de usuário familiar e fácil de usar para interagir com a IA.
