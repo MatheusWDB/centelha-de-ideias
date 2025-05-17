@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-CentelhaDeIdeiasApplication<centelha-de-ideias>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "br.com.hematsu.centelha_de_ideias.CentelhaDeIdeiasApplication",
+            "projectName": "centelha-de-ideias",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
