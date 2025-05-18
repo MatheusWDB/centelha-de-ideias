@@ -66,7 +66,8 @@ public class GeminiService {
 
     public String extractKeyword(String input, String keywordType) {
         String prompt = "Você é um assistente especializado em identificar Pontos-Chave de um texto.\n" +
-                "Sua tarefa é extrair o(as) [" + keywordType + "] principal(ais) do seguinte texto fornecido pelo usuário:\n" +
+                "Sua tarefa é extrair o(as) [" + keywordType
+                + "] principal(ais) do seguinte texto fornecido pelo usuário:\n" +
                 "```\n" + input + "\n```\n\n" +
                 "Instruções:\n" +
                 "1. Leia atentamente o texto.\n" +
@@ -76,11 +77,12 @@ public class GeminiService {
                 +
                 "5. A resposta deve ser o mais curta possível, idealmente uma palavra ou frase curta.\n" +
                 "6. Se o texto estiver vazio ou não mencionar explicitamente o(as) [" + keywordType
-                + "], fica ao seu critério defini-lo(as).\n\n" +
+                + "], fica ao seu critério defini-lo(as) com base no contexto geral ou sugerir algo relevante.\n\n" +
                 "Resposta (APENAS o [" + keywordType + "]):";
 
         try {
-            GenerateContentResponse response = modelsClient.generateContent("gemini-2.5-flash-preview-04-17-thinking", prompt,
+            GenerateContentResponse response = modelsClient.generateContent("gemini-2.5-flash-preview-04-17-thinking",
+                    prompt,
                     null);
 
             String extractedKeyword = response.text();
@@ -88,6 +90,8 @@ public class GeminiService {
             if (extractedKeyword == null || extractedKeyword.trim().isEmpty()) {
                 return "O Gemini não gerou uma resposta válida para o seu pedido (resposta vazia).";
             }
+
+            extractedKeyword = extractedKeyword.trim();
 
             return extractedKeyword;
 
@@ -108,40 +112,69 @@ public class GeminiService {
         String theme = extractKeyword(userInput, "tema principal");
         String projectType = extractKeyword(userInput, "tipo de projeto");
         String userInterests = extractKeyword(userInput, "interesse do usuário");
-        String techs = extractKeyword(userInput, "tecnologias preferidas");
+        String preferences = extractKeyword(userInput,
+                "preferências (tecnologias, materiais, ferramentas, técnicas, etc.)");
 
-        String generatedIdea = generateProjectIdea(theme, projectType, userInterests, techs);
+        String generatedIdea = generateProjectIdea(theme, projectType, userInterests, preferences);
         return generatedIdea;
     }
 
-    public String generateProjectIdea(String theme, String projectType, String userInterests, String techs) {
-        System.out.println(theme + projectType + userInterests + techs);
+    public String generateProjectIdea(String theme, String projectType, String userInterests, String preferences) {
+        System.out.println("Gerando ideia com: Tema=" + theme + ", Tipo=" + projectType + ", Interesses="
+                + userInterests + ", Preferências=" + preferences);
 
-        String prompt = "Você é um Gerador de Ideias de Projetos Criativos e Estruturados.\n" +
+        String prompt = "Você é um Gerador de Ideias de Projetos Criativos e Estruturados, capaz de sugerir projetos em DIVERSAS ÁREAS, como: marcenaria, audiovisual, marketing, software, culinária, educação, design, negócios, etc.\n"
+                +
                 "Sua missão é desenvolver UMA ÚNICA ideia de projeto inovadora, interessante e coerente, baseada nos seguintes elementos fornecidos:\n"
                 +
                 "- Tema Principal: " + theme + "\n" +
                 "- Tipo de Projeto: " + projectType + "\n" +
-                "- Interesses do Usuário: " + userInterests + "\n\n" +
+                "- Interesses do Usuário: " + userInterests + "\n" +
+                "- Preferências (Tecnologias, Ferramentas, etc.): " + preferences + "\n\n" +
                 "Apresente a ideia de projeto no seguinte FORMATO BEM ESTRUTURADO, usando cabeçalhos claros para cada seção:\n\n"
                 +
-                "Nome do Projeto:\n" +
-                "[Sugira um nome criativo e relevante para o projeto, alinhado com o tema e tipo.]\n\n" +
-                "Descrição:\n" +
-                "[Escreva uma descrição breve (aprox. 2 a 4 frases) explicando a essência do projeto, o que ele faz, qual problema resolve ou valor entrega, combinando os elementos dados. Mantenha um tom criativo e inspirador.]\n\n"
+                "**Nome do Projeto:**\n" +
+                "[Sugira um nome criativo e relevante para o projeto, alinhado com o tema e tipo. Deve soar apropriado para a área do projeto.]\n\n"
                 +
-                "Tecnologias Chaves Sugeridas:\n" +
-                "[Sugira tecnologias, frameworks, linguagens ou ferramentas fundamentais e relevantes que poderiam ser usadas para implementar este projeto. Seja específico se possível. Se possível, dê preferência as seguintes tecnologias '" + techs + "'.]\n\n"
+                "**Descrição:**\n" +
+                "[Escreva uma descrição breve (aprox. 2 a 4 frases) explicando a essência do projeto, o que ele faz, qual problema resolve ou valor entrega, combinando os elementos dados. Mantenha um tom criativo e inspirador, relevante para a área do projeto.]\n\n"
                 +
-                "Requisitos Principais:\n" +
-                "[Liste entre 5 e 10 requisitos essenciais (funcionais ou não funcionais) que o projeto deve atender. Apresente-os como uma lista de tópicos concisos, utilizando marcadores (como '-' ou '*').]\n\n"
+                "**[Escolha o título mais adequado para a próxima seção (por exemplo: 'Tecnologias Chave Sugeridas:', 'Ferramentas Chave Sugeridas:', 'Materiais Chave Sugeridos:', 'Técnicas Chave Sugeridas:', 'Recursos Chave Sugeridos:') com base no tipo de projeto e tema fornecidos. Responda APENAS com o título escolhido formatado em negrito e seguido de dois pontos. Exemplo de formato de título: **Recursos Chave Sugeridos:**]**\n"
                 +
-                "Regras de Negócio Essenciais:\n" +
-                "[Liste entre 5 e 10 regras de negócio fundamentais que definem como o projeto opera ou interage. Apresente-as como uma lista de tópicos concisos, utilizando marcadores (como '-' ou '*').]\n\n"
+                "[Liste até 6 recursos (ferramentas, materiais, plataformas, técnicas, tecnologias, etc.) fundamentais e relevantes que poderiam ser usados para implementar este projeto.\n"
                 +
-                "Certifique-se de que todos os elementos da ideia (Nome, Descrição, Tecnologia, Requisitos, Regras) estejam alinhados e integrem de forma significativa o Tema Principal, o Tipo de Projeto e os Interesses do Usuário fornecidos.\n"
+                "**Cada item da lista DEVE conter o caractere de markdown '-' seguido de um espaço e depois outro '-' literal colado com o item.** NÃO use apenas um hífen ('-') ou outros marcadores. Este formato é necessário para funcionar corretamente com o renderizador Markdown do frontend.\n"
                 +
-                "Não inclua introduções, conclusões ou texto fora das seções especificadas.";
+                "Exemplo de formato:\n- -Recurso de Exemplo 1\n- -Recurso de Exemplo 2\n" 
+                +
+                "A sugestão DEVE ser apropriada para o 'Tipo de Projeto' e o 'Tema Principal' específicos.\n" +
+                "Considere as 'Preferências' do usuário se forem relevantes e aplicáveis à área do projeto, mas NÃO se limite a elas e sugira algo relevante para a área, mesmo que não esteja nas preferências.\n"
+                +
+                "Exemplos de conteúdo para a lista: Para marcenaria, pode ser um tipo de madeira e uma ferramenta específica. Para audiovisual, um software de edição ou tipo de câmera. Para marketing, uma plataforma de mídia social ou estratégia. Para software, uma linguagem/framework.]\n\n"
+                +
+                "**Requisitos Principais:**\n" 
+                +
+                "[Liste entre 5 e 10 requisitos essenciais (funcionais ou não funcionais) que o projeto deve atender.\n"
+                +
+                "**Cada item da lista DEVE conter o caractere de markdown '-' seguido de um espaço e depois outro '-' literal colado com o item.** NÃO use apenas um hífen ('-') ou outros marcadores. Este formato é necessário para funcionar corretamente com o renderizador Markdown do frontend.\n"
+                +
+                "Exemplo de formato:\n- -Requisito A\n- -Requisito B\n"
+                +
+                "Apresente-os como uma lista de tópicos concisos. Estes requisitos DEVEM ser relevantes e específicos para o 'Tipo de Projeto' e 'Tema Principal'. NÃO liste apenas requisitos genéricos de software a menos que seja um projeto de software.]\n\n"
+                +
+                "**Regras de Negócio Essenciais:**\n"
+                +
+                "[Se aplicável ao tipo de projeto, liste entre 5 e 10 regras de negócio fundamentais que definem como o projeto opera ou interage.\n"
+                +
+                "**Cada item da lista DEVE conter o caractere de markdown '-' seguido de um espaço e depois outro '-' literal colado com o item.** NÃO use apenas um hífen ('-') ou outros marcadores. Este formato é necessário para funcionar corretamente com o renderizador Markdown do frontend.\n"
+                +
+                "Exemplo de formato:\n- -Regra de Negócio 1\n- -Regra de Negócio 2\n"
+                +
+                "Apresente-as como uma lista de tópicos concisos. Estas regras DEVEM ser relevantes e específicas para o 'Tipo de Projeto' e 'Tema Principal'. Se o tipo de projeto não envolve 'negócio' no sentido tradicional (ex: um hobby de marcenaria), liste 'Princípios Operacionais' ou 'Diretrizes Fundamentais' relevantes para a área.]\n\n"
+                +
+                "Certifique-se de que todos os elementos da ideia (Nome, Descrição, Recursos/Ferramentas/Materiais/Técnicas, Requisitos, Regras/Princípios) estejam alinhados e integrem de forma significativa o Tema Principal, o Tipo de Projeto, os Interesses do Usuário e as Preferências fornecidas, SEMPRE respeitando e focando na área do projeto especificada pelo 'Tipo de Projeto'.\n"
+                +
+                "Não inclua introduções, conclusões, notas ou texto fora das seções especificadas.";
 
         try {
             GenerateContentResponse response = modelsClient.generateContent("gemini-2.0-flash", prompt,
