@@ -6,6 +6,8 @@ O **Centelha de Ideias** é uma aplicação web interativa desenvolvida para est
 
 A interface do usuário simula um chat intuitivo, permitindo uma interação direta e natural com o assistente de IA para explorar e refinar ideias. É importante notar que cada nova mensagem enviada é processada de forma independente pelo sistema, e o histórico das interações anteriores não é mantido.
 
+**Este projeto é fruto direto dos aprendizados e da experiência proporcionada pela Imersão IA Alura + Google Gemini, servindo como o alicerce essencial para o seu desenvolvimento.**
+
 ## ✨ Funcionalidades Principais
 
 *   **Interface de Chat Interativa:** Uma experiência de usuário familiar e fácil de usar para interagir com a IA.
@@ -38,7 +40,14 @@ O projeto é estruturado em duas partes principais: Frontend (cliente) e Backend
 *   **`spring-dotenv`:** Dependência para carregar variáveis de ambiente (como a chave da API) a partir de um arquivo `.env`.
 *   **CORS (`@CrossOrigin`):** Configurado para permitir requisições do frontend hospedado em domínios/portas diferentes.
 
-## ⚙️ Como Executar a Aplicação
+## 📁 Estrutura do Repositório
+
+O projeto está organizado em dois diretórios principais na raiz do repositório:
+
+- `backend/`: Contém o código da API Spring Boot.
+- `frontend/`: Contém os arquivos HTML, CSS e JavaScript da interface web.
+
+## ⚙️ Como Executar a Aplicação Localmente
 
 Para colocar o "Centelha de Ideias" em funcionamento, você precisará configurar e iniciar o backend e o frontend separadamente.
 
@@ -55,7 +64,7 @@ Certifique-se de ter os seguintes softwares instalados em sua máquina:
 1.  **Clonar o Repositório:**
     ```bash
     git clone https://github.com/MatheusWDB/centelha-de-ideias
-    cd /backend # Navegue até a raiz do diretório do backend
+    cd backend # Navegue até a raiz do diretório do backend
     ```
 2.  **Configurar a Chave de API do Google Gemini:**
     Crie um arquivo na raiz do diretório do backend chamado `.env` e adicione sua chave de API:
@@ -83,7 +92,7 @@ O backend estará rodando e escutando em `http://localhost:8080`.
 3.  **Abra o Arquivo HTML:**
     Simplesmente abra o arquivo `index.html` diretamente em qualquer navegador web.
 
-    ```bash
+    ```bash    
     # Exemplo no Linux/macOS:
     open index.html
 
@@ -91,3 +100,14 @@ O backend estará rodando e escutando em `http://localhost:8080`.
     start index.html
     ```
     Certifique-se de que o backend já esteja em execução antes de abrir o `index.html`, pois o frontend tentará se comunicar com ele.
+
+## 🌐 Deploy Online
+
+A aplicação **Centelha de Ideias** está disponível online através dos seguintes links, com deploy realizado na plataforma Render:
+
+*   **Frontend (Aplicação Web):** Acesse a interface de chat interativa diretamente no seu navegador:
+    [https://centelha-de-ideias-undi.onrender.com](https://centelha-de-ideias-undi.onrender.com)
+
+*   **Backend (API REST):** O serviço de backend que alimenta a aplicação, hospedado separadamente:
+    [https://centelha-de-ideias.onrender.com](https://centelha-de-ideias.onrender.com)
+    *(Nota: Este link é a API e não possui uma interface visual para interação direta pelo navegador, a não ser que você use ferramentas como Postman ou similar para testar os endpoints)*.
