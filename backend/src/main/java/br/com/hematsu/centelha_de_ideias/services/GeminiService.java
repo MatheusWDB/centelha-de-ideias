@@ -131,7 +131,7 @@ public class GeminiService {
                 "[Escreva uma descrição breve (aprox. 2 a 4 frases) explicando a essência do projeto, o que ele faz, qual problema resolve ou valor entrega, combinando os elementos dados. Mantenha um tom criativo e inspirador.]\n\n"
                 +
                 "Tecnologias Chaves Sugeridas:\n" +
-                "[Sugira tecnologias, frameworks, linguagens ou ferramentas fundamentais e relevantes que poderiam ser usadas para implementar este projeto. Seja específico se possível. Dê preferência as sguintes tecnologias '" + techs + "'. Caso não haja tecnologias mencionadas, fica ao seu critério escolhe-las.]\n\n"
+                "[Sugira tecnologias, frameworks, linguagens ou ferramentas fundamentais e relevantes que poderiam ser usadas para implementar este projeto. Seja específico se possível. Se possível, dê preferência as seguintes tecnologias '" + techs + "'.]\n\n"
                 +
                 "Requisitos Principais:\n" +
                 "[Liste entre 5 e 10 requisitos essenciais (funcionais ou não funcionais) que o projeto deve atender. Apresente-os como uma lista de tópicos concisos, utilizando marcadores (como '-' ou '*').]\n\n"
