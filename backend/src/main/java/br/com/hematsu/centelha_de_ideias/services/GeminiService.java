@@ -66,21 +66,21 @@ public class GeminiService {
 
     public String extractKeyword(String input, String keywordType) {
         String prompt = "Você é um assistente especializado em identificar Pontos-Chave de um texto.\n" +
-                "Sua tarefa é extrair o [" + keywordType + "] principal do seguinte texto fornecido pelo usuário:\n" +
+                "Sua tarefa é extrair o(as) [" + keywordType + "] principal(ais) do seguinte texto fornecido pelo usuário:\n" +
                 "```\n" + input + "\n```\n\n" +
                 "Instruções:\n" +
                 "1. Leia atentamente o texto.\n" +
-                "2. Identifique o [" + keywordType + "] solicitado de forma concisa.\n" +
-                "3. Responda APENAS com o [" + keywordType + "] identificado.\n" +
+                "2. Identifique o(as) [" + keywordType + "] solicitado(as) de forma concisa.\n" +
+                "3. Responda APENAS com o(as) [" + keywordType + "] identificado(as).\n" +
                 "4. NÃO inclua qualquer comentário adicional, introdução, saudação, explicação ou pontuação extra antes ou depois da resposta (ex: 'O tema é:', '-', '.', etc.).\n"
                 +
                 "5. A resposta deve ser o mais curta possível, idealmente uma palavra ou frase curta.\n" +
-                "6. Se o texto estiver vazio ou não mencionar explicitamente o [" + keywordType
-                + "], fica ao seu critério definir um.\n\n" +
+                "6. Se o texto estiver vazio ou não mencionar explicitamente o(as) [" + keywordType
+                + "], fica ao seu critério defini-lo(as).\n\n" +
                 "Resposta (APENAS o [" + keywordType + "]):";
 
         try {
-            GenerateContentResponse response = modelsClient.generateContent("gemini-2.0-flash", prompt,
+            GenerateContentResponse response = modelsClient.generateContent("gemini-2.5-flash-preview-04-17-thinking", prompt,
                     null);
 
             String extractedKeyword = response.text();
@@ -108,13 +108,14 @@ public class GeminiService {
         String theme = extractKeyword(userInput, "tema principal");
         String projectType = extractKeyword(userInput, "tipo de projeto");
         String userInterests = extractKeyword(userInput, "interesse do usuário");
+        String techs = extractKeyword(userInput, "tecnologias preferidas");
 
-        String generatedIdea = generateProjectIdea(theme, projectType, userInterests);
+        String generatedIdea = generateProjectIdea(theme, projectType, userInterests, techs);
         return generatedIdea;
     }
 
-    public String generateProjectIdea(String theme, String projectType, String userInterests) {
-        System.out.println(theme + projectType + userInterests);
+    public String generateProjectIdea(String theme, String projectType, String userInterests, String techs) {
+        System.out.println(theme + projectType + userInterests + techs);
 
         String prompt = "Você é um Gerador de Ideias de Projetos Criativos e Estruturados.\n" +
                 "Sua missão é desenvolver UMA ÚNICA ideia de projeto inovadora, interessante e coerente, baseada nos seguintes elementos fornecidos:\n"
@@ -130,7 +131,7 @@ public class GeminiService {
                 "[Escreva uma descrição breve (aprox. 2 a 4 frases) explicando a essência do projeto, o que ele faz, qual problema resolve ou valor entrega, combinando os elementos dados. Mantenha um tom criativo e inspirador.]\n\n"
                 +
                 "Tecnologias Chaves Sugeridas:\n" +
-                "[Sugira tecnologias, frameworks, linguagens ou ferramentas fundamentais e relevantes que poderiam ser usadas para implementar este projeto. Seja específico se possível.]\n\n"
+                "[Sugira tecnologias, frameworks, linguagens ou ferramentas fundamentais e relevantes que poderiam ser usadas para implementar este projeto. Seja específico se possível. Dê preferência as sguintes tecnologias '" + techs + "'. Caso não haja tecnologias mencionadas, fica ao seu critério escolhe-las.]\n\n"
                 +
                 "Requisitos Principais:\n" +
                 "[Liste entre 5 e 10 requisitos essenciais (funcionais ou não funcionais) que o projeto deve atender. Apresente-os como uma lista de tópicos concisos, utilizando marcadores (como '-' ou '*').]\n\n"
